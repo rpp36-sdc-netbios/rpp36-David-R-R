@@ -11,4 +11,7 @@ describe('Checks for the test suite', () => {
   it('should also fail', () => {
     expect(2).toBe(1);
   })
+  it('should also pass', () => {
+    expect(5).toBe(5);
+  })
 });
