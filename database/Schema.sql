@@ -60,6 +60,6 @@ copy characteristics_reviews from '/Users/davidlim/hackReactor/Course/sdc-netbio
 copy reviews_photos from '/Users/davidlim/hackReactor/Course/sdc-netbios/rpp36-david-RatingsAndReview/data/reviews_photos.csv' csv header;
 CREATE INDEX review_id_index ON reviews(id);
 CREATE INDEX reviews_photos_index ON reviews_photos(review_id);
-CREATE INDEX reviews_photos_index ON reviews_photos(review_id);
+CREATE INDEX reviews_productid_index ON reviews(product_id);
 CREATE INDEX reviews_photos_index ON reviews_photos(review_id);
 CREATE INDEX reviews_photos_index ON reviews_photos(review_id);

@@ -6,6 +6,8 @@ const helper = require('../database/helper.js');
 const convertFormat = helper.convertFormat;
 const getReviews = helper.getReviews;
 const getPhotosForReview = helper.getPhotosForReview;
+const getMetaData = helper.getMetaData;
+const getCharData = helper.getCharData;
 const port = 8000;
 const app = express();
 
@@ -22,7 +24,7 @@ app.get('/reviews', (req, res) => {
   async function callGetReviews() {
     let reviews = await getReviews({product_id, sort, count, page});
     let photos = [];
-    reviews.map((review) => {
+    reviews = reviews.map((review) => {
       photos.push(Promise.resolve(getPhotosForReview(review.id)));
       return convertFormat(review);
     });
@@ -31,17 +33,40 @@ app.get('/reviews', (req, res) => {
         reviews[i].photos = value[i];
       }
     })
-    let query = {
+    let queryResult = {
     product: product_id,
     page,
     count,
     results: reviews
     }
-    res.send(reviews);
+    res.status(200).send(queryResult);
   };
 
-  callGetReviews();
-})
+  try {
+    callGetReviews();
+  } catch (e) {
+    console.log('error', e);
+    res.sendStatus(500);
+  }
+});
+
+app.get('/reviews/meta', (req, res) => {
+  var {product_id} = req.query;
+  async function callGetMetaData() {
+    var [ratings, recommended] = await getMetaData(product_id);
+    var characteristics = await getCharData(product_id);
+    var metaData = {
+      product_id, ratings, recommended, characteristics
+    };
+    res.status(200).send(metaData);
+  }
+  try {
+    callGetMetaData();
+  } catch (e) {
+    console.log('error', e);
+    res.sendStatus(500);
+  }
+});
 
 //explain analyze
 //pagination or endless scroll
