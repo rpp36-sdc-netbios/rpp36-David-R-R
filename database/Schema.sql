@@ -61,5 +61,15 @@ copy reviews_photos from '/Users/davidlim/hackReactor/Course/sdc-netbios/rpp36-d
 CREATE INDEX review_id_index ON reviews(id);
 CREATE INDEX reviews_photos_index ON reviews_photos(review_id);
 CREATE INDEX reviews_productid_index ON reviews(product_id);
-CREATE INDEX reviews_photos_index ON reviews_photos(review_id);
-CREATE INDEX reviews_photos_index ON reviews_photos(review_id);
+CREATE INDEX characteristics_characteristics_id_index ON characteristics_reviews(characteristics_id);
+CREATE INDEX characteristics_product_id_index ON characteristics(product_id);
+CREATE INDEX characteristics_reviews_reviews_id_index ON characteristics_reviews(review_id);
+
+WITH mx AS ( SELECT MAX(id) AS id FROM public.characteristics_reviews)
+SELECT setval('public.characteristics_reviews_id_seq', mx.id) AS curseq
+FROM mx;
+
+WITH mx AS ( SELECT MAX(id) AS id FROM public.reviews)
+SELECT setval('public.reviews_id_seq', mx.id) AS curseq
+FROM mx;
+

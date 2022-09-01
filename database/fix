@@ -1,0 +1,52 @@
+ return (db.query(`SELECT * FROM characteristics WHERE product_id=${product_id};`))
+    .then((char) => {
+      var characteristics = {};
+      for (var i = 0; i < char.rows.length; i ++) {
+        characteristics[char.rows[i].name] = {'id': char.rows[i].id, 'value': 0};
+      }
+      var query = [];
+      var order = [];
+      for (var character in characteristics) {
+        order.push(character);
+        query.push(db.query(`SELECT * FROM characteristics_reviews WHERE characteristics_id=${characteristics[character].id}`))
+      }
+      return Promise.all(query)
+        .then((data) => {
+          for (var result of data) {
+            for (var row of result.rows) {
+              characteristics[order[0]].value += row.value / result.rows.length;
+            }
+            order.shift();
+          }
+          return characteristics;
+        })
+    })
+
+    var getCharData = (product_id) => {
+      // return (db.query(`SELECT * FROM characteristics_reviews JOIN characteristics ON characteristics.id =
+      // characteristics_reviews.characteristics_id WHERE product_id=${product_id};`))
+      return (db.query(`SELECT * FROM characteristics_reviews
+      JOIN characteristics ON characteristics.id = characteristics_reviews.characteristics_id
+      JOIN reviews ON reviews.id = characteristics_reviews.review_id
+      WHERE characteristics.product_id = ${product_id};`))
+        .then((data) => {
+          let response = data.rows;
+          let charCollection = {};
+          for (var i = 0; i < response.length; i ++) {
+            let charName = response[i].name;
+            let charNum = response[i]['characteristics_id'];
+            if (charCollection[charName] === undefined) {
+              charCollection[charName] = {};
+              charCollection[charName]['id'] = charNum;
+              charCollection[charName]['value'] = [response[i].value, 1];
+            } else {
+              charCollection[charName].value[0] += response[i].value;
+              charCollection[charName].value[1] ++;
+            }
+          }
+          for (var char in charCollection) {
+            charCollection[char].value = charCollection[char].value[0] / charCollection[char].value[1];
+          }
+          return charCollection;
+        })
+    };
