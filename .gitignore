@@ -1,2 +1,7 @@
 node_modules
 coverage
+data/characteristic_reviews.csv
+data/characteristics.csv
+data/product.csv
+data/reviews_photos.csv
+data/reviews.csv

@@ -1,0 +1,8 @@
+docker run --rm \
+  -d --restart unless-stopped \
+  --name newrelic-statsd \
+  -h $(hostname) \
+  -e NR_ACCOUNT_ID=<NR-ACCOUNT-ID> \
+  -e NR_API_KEY="<NR-INSERT-API-KEY>" \
+  -p 8125:8125/udp \
+  newrelic/nri-statsd:latest
