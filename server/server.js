@@ -30,7 +30,10 @@ app.get('/reviews', (req, res) => {
       });
       await Promise.all(photos).then((value) => {
         for (var i = 0; i < value.length; i ++) {
-          reviews[i].photos = value[i];
+          let reviewPhotos = value[i];
+          if (reviewPhotos.length !== 0) {
+            reviews[i].photos = reviewPhotos;
+          }
         }
       })
       let queryResult = {
